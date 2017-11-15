@@ -1,0 +1,250 @@
+/*
+** name  : navbar.less
+** author: chocolatl
+** date  : 2017-02-01
+*/
+
+//主题色
+@bg-color: #2196F3;
+
+@bg-color-dark: darken(@bg-color,5%);
+
+//导航条项目的高度
+@nav-height: 55px;
+
+//移动设备侧导航栏宽度
+@nav-width: 260px;
+
+//移动设备的边界
+@small-screen-width: 950px;
+
+@z-index-base: 900;
+
+//导航链接的样式
+.nav-link-style {
+    color: white;
+    display: block;
+    padding: 0 25px;
+    line-height: @nav-height;
+    height: @nav-height;
+    text-decoration: none;
+}
+
+.navbar {
+    
+    //公共样式
+
+    //导航条列表和下拉菜单列表
+    ul.dropdown-menu ,
+    ul.navbar-nav {
+        //设置背景色
+        background-color: @bg-color;
+
+        //清除列表默认样式
+        margin: 0;
+        padding: 0;
+        > li {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        li > a {
+            //导航链接的样式
+            &:extend(.nav-link-style);
+        }
+
+        //应用了active的li突出显示
+        li.active {
+            background-color: @bg-color-dark;
+        }
+    }
+
+    //大屏设备样式
+
+    @media screen and (min-width: @small-screen-width) {
+
+        //拥有navbar-fixed类的.navbar固定在页面顶部
+        &.navbar-fixed > .navbar-nav {
+            position: fixed;
+        }
+
+        //非移动设备隐藏移动设备导航条
+        > .navbar-head {
+            display: none;
+        }
+
+        //导航条菜单
+        ul.navbar-nav {
+            height: @nav-height;
+            width: 100%;
+
+            //列表项
+            > li {
+                float: left;
+            }
+
+            //拥有下拉菜单的列表项
+            > li.dropdown {
+
+                //下拉菜单样式
+                > ul.dropdown-menu {
+                    position: absolute;
+                    left: -9999px;
+                    z-index: @z-index-base + 2;
+
+                    opacity: 0;
+                    transition: opacity 0.3s ease-in-out 0.2s;
+                }
+
+                //列表项拥有.open类的下拉菜单被显示
+                &.open > ul.dropdown-menu {
+                    left: auto !important;
+                    opacity: 1 !important;
+                }
+            }
+
+            //导航条的列表项和下拉菜单的列表项
+            > li ,
+            ul.dropdown-menu > li {
+                //鼠标经过列表项时的效果
+                transition: background-color .2s ease-in-out 0s;
+                &:hover {
+                    background-color: @bg-color-dark;
+                }
+            }
+        }
+    }
+
+    //移动设备样式
+
+    @media screen and (max-width: @small-screen-width) {
+
+        //拥有navbar-fixed类的.navbar固定在页面顶部
+        &.navbar-fixed > .navbar-head {
+            position: fixed;
+            width: 100%;
+        }
+
+        > .navbar-head {
+            //显示移动设备导航条
+            background-color: @bg-color;
+            display: block;
+            height: @nav-height;
+            width: 100%;
+
+            > .navbar-toggle {
+                //菜单按钮样式
+                border: none;
+                background-color: transparent;
+                color: white;
+                line-height: @nav-height;
+                height: @nav-height;
+                width: @nav-height;
+                text-align: center;
+                padding: 0;
+            }
+        }
+
+
+        //主菜单
+        > ul.navbar-nav {
+            position: fixed;
+            top: 0;
+            z-index: @z-index-base + 1;
+            padding-top: @nav-height;
+
+            //防止下拉菜单使用padding-left做动画时溢出
+            overflow-x: hidden;
+
+            overflow-y: auto;
+
+            width: @nav-width;
+
+            //主菜单的高度由JS设置为与页面同高
+            height: 99999px;
+            box-sizing: border-box;
+
+            transform: translatex(-@nav-width);
+            transition: transform 0.2s ease-in-out 0.1s;
+
+            //应用了.open类的移动设备主菜单被显示
+            &.open {
+                transform: translatex(0);
+            }
+
+            //主菜单菜单项
+            > li {
+                box-sizing: border-box;
+                width: @nav-width;
+
+                transition: margin-left 0.2s ease-in-out 0.1s;  
+                margin-left: 0;
+
+                //应用了.move类的列表项向左移出
+                &.move {
+                    margin-left: -@nav-width;
+                }
+            }
+
+            //拥有下拉菜单的主菜单菜单项
+            > li.dropdown {
+
+                //下拉菜单
+                > ul.dropdown-menu {
+
+                    //相对于主菜单
+                    position: absolute;
+                    left: 0;
+                    top: -9999px;
+
+                    //防止padding-left在过渡动画时下拉菜单直接覆盖主菜单
+                    background-color: transparent;
+
+                    padding-left: @nav-width;
+                    transition: padding-left 0.2s ease-in-out 0.1s;
+
+                    > li {
+                        width: @nav-width;
+                    }
+                }
+
+                //主菜单菜单项应用了.open类时主菜单项对应的下拉菜单
+                &.open > ul.dropdown-menu {
+                    top: @nav-height;
+                    padding-left: 0;
+                }
+            }
+        }
+
+        //主菜单和下拉菜单的所有链接
+        a {
+            //菜单项内容过长时显示省略号
+            display:block;
+            white-space:nowrap; 
+            overflow:hidden; 
+            text-overflow:ellipsis;
+        }
+
+        //下拉菜单的返回按钮
+        .dropdown-menu::before {
+            content: "<";
+            width: @nav-width;
+            position: absolute;
+            top: -@nav-height;
+            box-sizing: border-box;
+            .nav-link-style;
+        }
+    }
+}
+
+//遮盖层
+.sidenav-overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: @z-index-base;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+}
